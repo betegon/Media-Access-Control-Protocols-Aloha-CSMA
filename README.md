@@ -14,3 +14,13 @@ The repository is divided in two exercises:
 * Analysis of CSMA/CA systems performance in saturation conditions.
 	* Analyze Giuseppe Bianchi proposal and obtain similar results.
 
+## Exercises Guidelines
+
+Image below shows exercises 1 and 2 guidelines.
+
+![Guidelines](https://raw.githubusercontent.com/betegon/Media_Access_Control_Protocols_Aloha_CSMA/master/documentation/enunciados.png)
+
+the next image shows some examples of parameters to use for implementing the exercises solutions.
+
+![parameters](https://github.com/betegon/Media_Access_Control_Protocols_Aloha_CSMA/blob/master/documentation/parametros.png?raw=true)
+
