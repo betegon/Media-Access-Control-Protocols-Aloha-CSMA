@@ -1,30 +1,30 @@
+%% EXERCISE 1 
 
-
-%% EJERCICIO 1 
-
-% PRIMERA PARTE - 0 A M USUARIOS EN BACKLOG
-% PARAMETROS GRUPO 2
-%   M=24, sigma=0.3, fi=0.2,0.1
+% 0 TO M Users in Backlog
+% Group 2 parameters
+% M=24, 	Number of states.
+% sigma=0.3,	Probability of transmit in thinking state. 
+% fi=0.2,0.1    Probability of transmit in Backlog state.
 
 clear all
 close all
-M = 24; %Numero de estados
+M = 24; %
 
 sig = 0.3; %Prob Transmitir en Thinking; sigma
-fi = 0.1; %Prob Transmitir en Back; phi
+fi = 0.1; %Prob Transmitir en Back; phi 
 
 pij = zeros(M+2,M+1); %Inicializar Matriz Prob Transisicion. formada por: filas - sistema de M+2 ecuaciones,  columnas - M+1 estados.
 pij(M+2,:)=1;
 
 
 %probk =  Matrix donde Probk(i,j) = prob de ir del estado i al j.
-for (i=0:M)% ciclo filas   %%% IDEA, DE 1 A M+1 ASI QUITAMOS TODOS LOS J+1,I+1
+for (i=0:M)% ciclo filas  
     for (j=0:M) %ciclo columnas
         if (j<i-1)
             pij(j+1,i+1)=0; %Arrays en matlab indexados desde 1,2,... probk(1,1)=primer elemento. por eso j+1,i+1   
-            
+            	
         elseif (j==i-1)
-            pij(j+1,i+1)=(i*fi)*((1-fi)^(i-1))*((1-sig)^(M-i));
+            pij(j+1,i+1)=(i*fi)*((1-fi)^(i-1))*((1-sig)^(M-i)); %i*fi o fi.
             pij(j+1,i+1)=pij(j+1,i+1)*(-1);
         elseif (j==i)
             pij(j+1,i+1)=((1-(i*fi)*((1-fi)^(i-1)))*((1-sig)^(M-i)))+(((M-i)*sig*(1-sig)^(M-i-1))*((1-fi)^i));
@@ -39,61 +39,30 @@ for (i=0:M)% ciclo filas   %%% IDEA, DE 1 A M+1 ASI QUITAMOS TODOS LOS J+1,I+1
     end
 end
 
-% comprobacion_probs=zeros(M+1,1);
-% for i=1:M+1 % la ultima fila no hay que sumarla, son los 1s.
-%     comprobacion_probs(i)=sum(pij(i,:));
-% end
-% comprobacion_probs
+prob_states=zeros(M+2,1); %Inicializo las probabilidades de cada Estado
+prob_states(M+2,1)=1;% Suma Prob Igual a 1
+x=linsolve(pij,prob_states); % x = Probabilidades de cada Estado
 
-r=zeros(M+2,1);
-r(M+2,1)=1;% sumatorio de probabilidades es 1
-x=linsolve(pij,r) % x es el vector de probabilidades de estado
-
-
-Pe=zeros(M+1,1);
+Pe=zeros(M+1,1); %Probabilidad de Exito en cada Estado
 for i=0:M
-    Pe(i+1)=(((1-fi)^i)*(M-i)*sig*((1-sig)^(M-i-1)))+(i*fi*((1-fi)^(i-1))*((1-sig)^(M-i)));
-
+    Pe(i+1)=(1-fi)^(i)*(M-i)*sig*(1-sig)^(M-i-1)+i*fi*(1-fi)^(i-1)*(1-sig)^(M-i);
 end
- Pe
- 
 
- S=0;
- for i=0:M
-     g=Pe(i+1)*x(i+1);
-     S=S+g;
- end
- S
+S=(sum(Pe.*x)); %Throughtput
+D=1-(1/sig)+(M/S); %Retardo
 
- %Con 0.2 de fi hay ef captura pero con 0.1 no
+%%%%%%%%%GRAFICA PARTE 1%%%%%%%%
+
  
- D=1-(1/sig)+(M/S)
+  
  
+ %%%%%%%%%GRAFICA
  
- 
- 
- 
- 
- 
- 
- 
- 
- 
- %%%%%%%%%GRAFICAS
- 
- figure(1)
- stem(x) %%PRob de cada uno de los estados
- 
-fi=0.3
-for sig=0:10^0.001:1
-    Pe=zeros(M+1,1);
-    for i=0:M
-        Pe(i+1)=(((1-fi)^i)*(M-i)*sig*((1-sig)^(M-i-1)))+(i*fi*((1-fi)^(i-1))*((1-sig)^(M-i)));
-    end
-     S=0;
-    for i=0:M
-     g=Pe(i+1)*x(i+1);
-     S=S+g;
-    end
-     D=1-(1/sig)+(M/S)
- end
+figure(1)
+t=0:M;
+stm = stem(t,x)
+title('Probabilidad de cada estado (fi = 0.2)');
+grid on
+set(gca, 'YScale', 'log')
+sum_probs = sum(x)
+
